@@ -1,3 +1,5 @@
+import math
+
 class HeapTree():
     def __init__(self):
         self.root = HeapTree.Node()
@@ -9,42 +11,87 @@ class HeapTree():
             self.node_num = self.node_num + 1
             return
 
+        parent = self.get_node((self.node_num + 1) / 2)
         self.node_num = self.node_num + 1
 
-        new_node = self.node_num
-        direction = [] # NOTE: 0 for left, 1 for right
-        while new_node != 1:
-            direction.append(new_node % 2)
-            new_node = new_node / 2
-        # print direction
-
-        parent = self.root
-        for i in range(len(direction)-1):
-            if direction.pop() == 0:
-                parent = parent.left
-            else:
-                parent = parent.right
-
-        if direction.pop() == 0:
-            parent.left = HeapTree.Node(value, parent)
-            last = parent.left
+        current = HeapTree.Node(value, parent)
+        if (self.node_num % 2) == 0:
+            parent.left = current
         else:
-            parent.right = HeapTree.Node(value, parent)
-            last = parent.right
+            parent.right = current
+            # parent.right = HeapTree.Node(value, parent)
+            # last = parent.right
 
         is_inversed = True
-        while is_inversed and parent != None:
-            if last.value < parent.value:
-                tmp = last.value
-                last.value = parent.value
-                parent.value = tmp
-                last = parent
-                parent = parent.parent
+        # while is_inversed and parent != None:
+        #     if current.value < parent.value:
+        #         tmp = current.value
+        #         current.value = parent.value
+        #         parent.value = tmp
+        #         current = parent
+        #         parent = parent.parent
+        while is_inversed and current.parent != None:
+            if current.value < current.parent.value:
+                tmp = current.value
+                current.value = current.parent.value
+                current.parent.value = tmp
+                current = current.parent
+                # parent = parent.parent
             else:
                 is_inversed = False
 
+    def get_node(self, node_id):
+        if self.node_num + 1 < node_id or node_id < 1: # node id of root is 1
+            return None
+        direction = [] # NOTE: 0 for left, 1 for right
+        while node_id != 1:
+            direction.append(node_id % 2)
+            node_id = node_id / 2
+
+        current = self.root
+        for i in range(len(direction)):
+            if direction.pop() == 0:
+                current = current.left
+            else:
+                current = current.right
+        return current
+
     def pop_root(self):
-        pass
+        res = self.root.value
+        current = self.root
+        depth = math.ceil(math.log(self.node_num + 1, 2)) # NOTE: root is depth 0
+        #        last = self.get_last()
+        if current.left == None:
+            self.root = HeapTree.Node()
+            return res
+        while current.left != None:
+            if current.right != None:
+                if current.left.value < current.right.value:
+                    current.value = current.left.value
+#                    parent = current
+                    direction = "left"
+                    current = current.left
+                else:
+                    current.value = current.right.value
+#                    parent = current
+                    direction = "right"
+                    current = current.right
+            else:
+                # NOTE: left node is the last node
+                current.value = current.left.value
+                # parent = current
+                current = current.left
+                direction = "left"
+                break
+
+        if direction == "left":
+            current.parent.left = None
+        else:
+            current.parent.right = None
+
+
+
+        return res
 
     def contains(self, value):
         pass
@@ -54,16 +101,22 @@ class HeapTree():
         current.append(self.root)
         depth = 0
         value_list = []
-        while len(current) != 0:
+        # while len(current) != 0:
+        while current != []:
             s = []
             value_list.append([])
-            for i in range(len(current)):
-                node = current.pop(0)
+            for node in current:
+            # for i in range(len(current)):
+            #     node = current.pop(0)
                 value_list[depth].append(node.value)
                 if node.left != None:
                     s.append(node.left)
-                if node.right != None:
-                    s.append(node.right)
+                    if node.right != None:
+                        s.append(node.right)
+                    else:
+                        s.append(HeapTree.Node()) # dummy node
+                else:
+                    assert node.right == None, "error! tree is not shaped"
             current = s
             depth = depth + 1
         print value_list
@@ -77,9 +130,24 @@ class HeapTree():
 
 if __name__ == "__main__":
     tree = HeapTree()
+    tree.dump()
     for i in range(16):
-        tree.dump()
         tree.add(16-i)
+        tree.dump()
     # print vars(tree)
     # print vars(tree.root)
+    for i in range(16):
+        print tree.get_node(i+1).value
+    for i in range(16):
+        tree.dump()
+        tree.pop_root()
+#        print tree.pop_root()
     tree.dump()
+
+    tree = HeapTree()
+    tree.add(1)
+    tree.add(2)
+    tree.add(3)
+    tree.dump()
+    # tree.pop_root()
+    #    tree.dump()

@@ -31,7 +31,7 @@ class HeapTree():
                 is_inversed = False
 
     def get_node(self, node_id):
-        if self.node_num + 1 < node_id or node_id < 1: # node id of root is 1
+        if self.node_num + 1 < node_id or node_id < 1: # NOTE: node id of root is 1
             return None
         direction = [] # NOTE: 0 for left, 1 for right
         while node_id != 1:
@@ -70,7 +70,7 @@ class HeapTree():
                 direction = "left"
                 break
 
-        last_node = self.get_node(self.node_num)
+        last_node = self.get_node(node_id = self.node_num)
         current.value = last_node.value
         if self.node_num % 2 == 0:
             last_node.parent.left = None
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         tree.add(16-i)
         tree.dump()
     for i in range(16):
-        print tree.get_node(i+1).value
+        print tree.get_node(node_id = i+1).value
     for i in range(16):
         tree.dump()
         tree.pop_root()

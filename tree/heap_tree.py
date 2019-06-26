@@ -84,12 +84,29 @@ class HeapTree():
                 direction = "left"
                 break
 
-        if direction == "left":
-            current.parent.left = None
+        last_node = self.get_node(self.node_num)
+        # if not current == last_node:
+        current.value = last_node.value
+        if self.node_num % 2 == 0:
+            last_node.parent.left = None
         else:
-            current.parent.right = None
+            last_node.parent.right = None
+        self.node_num = self.node_num - 1
 
+        is_inversed = True
+        while is_inversed and current.parent != None:
+            if current.value < current.parent.value:
+                tmp = current.value
+                current.value = current.parent.value
+                current.parent.value = tmp
+                current = current.parent
+            else:
+                is_inversed = False
 
+        # if direction == "left":
+        #     current.parent.left = None
+        # else:
+        #     current.parent.right = None
 
         return res
 
@@ -134,8 +151,6 @@ if __name__ == "__main__":
     for i in range(16):
         tree.add(16-i)
         tree.dump()
-    # print vars(tree)
-    # print vars(tree.root)
     for i in range(16):
         print tree.get_node(i+1).value
     for i in range(16):
@@ -151,3 +166,15 @@ if __name__ == "__main__":
     tree.dump()
     # tree.pop_root()
     #    tree.dump()
+
+    tree = HeapTree()
+    values = [1, 2, 3, 4, 5, 3, 3]
+    for i in values:
+        tree.add(i)
+    tree.dump()
+    tree.pop_root()
+    tree.dump()
+    tree.pop_root()
+    tree.dump()
+    tree.pop_root()
+    tree.dump()

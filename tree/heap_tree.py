@@ -11,7 +11,7 @@ class HeapTree():
             self.node_num = self.node_num + 1
             return
 
-        parent = self.get_node((self.node_num + 1) / 2)
+        parent = self.get_node(node_id = (self.node_num + 1) / 2)
         self.node_num = self.node_num + 1
 
         current = HeapTree.Node(value, parent)
@@ -31,20 +31,39 @@ class HeapTree():
                 is_inversed = False
 
     def get_node(self, node_id = None, node_value = None):
-        if self.node_num + 1 < node_id or node_id < 1: # NOTE: node id of root is 1
+        if node_id == None and node_value == None:
             return None
-        direction = [] # NOTE: 0 for left, 1 for right
-        while node_id != 1:
-            direction.append(node_id % 2)
-            node_id = node_id / 2
+        assert node_id == None or node_value == None, "get_node: specifying both node_id and node_value is not supported!"
 
-        current = self.root
-        for i in range(len(direction)):
-            if direction.pop() == 0:
-                current = current.left
-            else:
-                current = current.right
-        return current
+        if node_id != None:
+            if self.node_num + 1 < node_id or node_id < 1: # NOTE: node id of root is 1
+                return None
+            direction = [] # NOTE: 0 for left, 1 for right
+            while node_id != 1:
+                direction.append(node_id % 2)
+                node_id = node_id / 2
+
+            current = self.root
+            for i in range(len(direction)):
+                if direction.pop() == 0:
+                    current = current.left
+                else:
+                    current = current.right
+            return current
+
+        else: # NOTE: node_value != None
+            stack  = []
+            stack.append(self.root)
+            while stack != []:
+                current = stack.pop()
+                if current.value == node_value:
+                    return current
+                else:
+                    if current.left != None:
+                        stack.append(current.left)
+                    if current.right != None:
+                        stack.append(current.right)
+            return None # NOTE: no node has node_value
 
     def pop_root(self):
         res = self.root.value
@@ -155,6 +174,8 @@ def test():
     tree.pop_root()
     tree.dump()
 
+    print tree.get_node(node_value = 3).value
+    print tree.get_node(node_value = 10)
+
 if __name__ == "__main__":
     test()
-

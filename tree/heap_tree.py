@@ -66,47 +66,86 @@ class HeapTree():
             return None # NOTE: no node has node_value
 
     def pop_root(self):
+        assert self.root != None, "error! root is None" # NOTE: tree has at least one Node as dummy root
         res = self.root.value
-        current = self.root
-        depth = math.ceil(math.log(self.node_num + 1, 2)) # NOTE: root is depth 0
-        if current.left == None:
+        if self.root.left == None:
             self.root = HeapTree.Node()
             return res
-        while current.left != None:
-            if current.right != None:
-                if current.left.value < current.right.value:
-                    current.value = current.left.value
-                    direction = "left"
-                    current = current.left
-                else:
-                    current.value = current.right.value
-                    direction = "right"
-                    current = current.right
-            else:
-                # NOTE: left node is the last node
-                current.value = current.left.value
-                current = current.left
-                direction = "left"
-                break
 
         last_node = self.get_node(node_id = self.node_num)
-        current.value = last_node.value
+        self.root.value = last_node.value
         if self.node_num % 2 == 0:
             last_node.parent.left = None
         else:
             last_node.parent.right = None
         self.node_num = self.node_num - 1
 
+        current = self.root
         is_inversed = True
-        while is_inversed and current.parent != None:
-            if current.value < current.parent.value:
-                tmp = current.value
-                current.value = current.parent.value
-                current.parent.value = tmp
-                current = current.parent
+        while current.left != None and is_inversed:
+            is_inversed = False
+            if current.right != None:
+                if current.left.value < current.right.value:
+                    if current.value > current.left.value:
+                        tmp = current.value
+                        current.value = current.left.value
+                        current.left.value = tmp
+                        current = current.left
+                        is_inversed = True
+                else:
+                    if current.value > current.right.value:
+                        tmp = current.value
+                        current.value = current.right.value
+                        current.right.value = tmp
+                        current = current.right
+                        is_inversed = True
             else:
-                is_inversed = False
+                # NOTE: left node is the last node
+                if current.left.value < current.value:
+                    tmp = current.value
+                    current.value = current.left.value
+                    current.left.value = tmp
+                    current = current.left
         return res
+
+        # depth = math.ceil(math.log(self.node_num + 1, 2)) # NOTE: root is depth 0
+        # if current.left == None:
+        #     self.root = HeapTree.Node()
+        #     return res
+        # while current.left != None:
+        #     if current.right != None:
+        #         if current.left.value < current.right.value:
+        #             current.value = current.left.value
+        #             direction = "left"
+        #             current = current.left
+        #         else:
+        #             current.value = current.right.value
+        #             direction = "right"
+        #             current = current.right
+        #     else:
+        #         # NOTE: left node is the last node
+        #         current.value = current.left.value
+        #         current = current.left
+        #         direction = "left"
+        #         break
+
+        # last_node = self.get_node(node_id = self.node_num)
+        # current.value = last_node.value
+        # if self.node_num % 2 == 0:
+        #     last_node.parent.left = None
+        # else:
+        #     last_node.parent.right = None
+        # self.node_num = self.node_num - 1
+
+        # is_inversed = True
+        # while is_inversed and current.parent != None:
+        #     if current.value < current.parent.value:
+        #         tmp = current.value
+        #         current.value = current.parent.value
+        #         current.parent.value = tmp
+        #         current = current.parent
+        #     else:
+        #         is_inversed = False
 
     def contains(self, value):
         if self.get_node(node_value = value) != None:

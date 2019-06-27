@@ -30,7 +30,7 @@ class HeapTree():
             else:
                 is_inversed = False
 
-    def get_node(self, node_id):
+    def get_node(self, node_id = None, node_value = None):
         if self.node_num + 1 < node_id or node_id < 1: # NOTE: node id of root is 1
             return None
         direction = [] # NOTE: 0 for left, 1 for right
@@ -121,7 +121,8 @@ class HeapTree():
             self.right = None
             self.parent = parent
 
-if __name__ == "__main__":
+
+def test():
     tree = HeapTree()
     tree.dump()
     for i in range(16):
@@ -153,3 +154,7 @@ if __name__ == "__main__":
     tree.dump()
     tree.pop_root()
     tree.dump()
+
+if __name__ == "__main__":
+    test()
+

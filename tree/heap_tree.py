@@ -109,7 +109,10 @@ class HeapTree():
         return res
 
     def contains(self, value):
-        pass
+        if self.get_node(node_value = value) != None:
+            return True
+        else:
+            return False
 
     def dump(self):
         current = []
@@ -140,42 +143,84 @@ class HeapTree():
             self.right = None
             self.parent = parent
 
-
-def test():
-    tree = HeapTree()
-    tree.dump()
-    for i in range(16):
-        tree.add(16-i)
+    @staticmethod
+    def test():
+        tree = HeapTree()
         tree.dump()
-    for i in range(16):
-        print tree.get_node(node_id = i+1).value
-    for i in range(16):
+        for i in range(16):
+            tree.add(16-i)
+            tree.dump()
+        for i in range(16):
+            print tree.get_node(node_id = i+1).value
+        for i in range(16):
+            tree.dump()
+            tree.pop_root()
+        tree.dump()
+
+        tree = HeapTree()
+        tree.add(1)
+        tree.add(2)
+        tree.add(3)
         tree.dump()
         tree.pop_root()
-    tree.dump()
+        tree.dump()
 
-    tree = HeapTree()
-    tree.add(1)
-    tree.add(2)
-    tree.add(3)
-    tree.dump()
-    tree.pop_root()
-    tree.dump()
+        tree = HeapTree()
+        values = [1, 2, 3, 4, 5, 3, 3]
+        for i in values:
+            tree.add(i)
+        tree.dump()
+        tree.pop_root()
+        tree.dump()
+        tree.pop_root()
+        tree.dump()
+        tree.pop_root()
+        tree.dump()
 
-    tree = HeapTree()
-    values = [1, 2, 3, 4, 5, 3, 3]
-    for i in values:
-        tree.add(i)
-    tree.dump()
-    tree.pop_root()
-    tree.dump()
-    tree.pop_root()
-    tree.dump()
-    tree.pop_root()
-    tree.dump()
+        print tree.get_node(node_value = 3).value
+        print tree.get_node(node_value = 10)
+        print tree.contains(3)
+        print tree.contains(10)
 
-    print tree.get_node(node_value = 3).value
-    print tree.get_node(node_value = 10)
+
+# def test():
+#     tree = HeapTree()
+#     tree.dump()
+#     for i in range(16):
+#         tree.add(16-i)
+#         tree.dump()
+#     for i in range(16):
+#         print tree.get_node(node_id = i+1).value
+#     for i in range(16):
+#         tree.dump()
+#         tree.pop_root()
+#     tree.dump()
+
+#     tree = HeapTree()
+#     tree.add(1)
+#     tree.add(2)
+#     tree.add(3)
+#     tree.dump()
+#     tree.pop_root()
+#     tree.dump()
+
+#     tree = HeapTree()
+#     values = [1, 2, 3, 4, 5, 3, 3]
+#     for i in values:
+#         tree.add(i)
+#     tree.dump()
+#     tree.pop_root()
+#     tree.dump()
+#     tree.pop_root()
+#     tree.dump()
+#     tree.pop_root()
+#     tree.dump()
+
+#     print tree.get_node(node_value = 3).value
+#     print tree.get_node(node_value = 10)
+#     print tree.contains(3)
+#     print tree.contains(10)
 
 if __name__ == "__main__":
-    test()
+#    test()
+    HeapTree.test()

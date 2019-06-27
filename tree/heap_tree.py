@@ -108,45 +108,6 @@ class HeapTree():
                     current = current.left
         return res
 
-        # depth = math.ceil(math.log(self.node_num + 1, 2)) # NOTE: root is depth 0
-        # if current.left == None:
-        #     self.root = HeapTree.Node()
-        #     return res
-        # while current.left != None:
-        #     if current.right != None:
-        #         if current.left.value < current.right.value:
-        #             current.value = current.left.value
-        #             direction = "left"
-        #             current = current.left
-        #         else:
-        #             current.value = current.right.value
-        #             direction = "right"
-        #             current = current.right
-        #     else:
-        #         # NOTE: left node is the last node
-        #         current.value = current.left.value
-        #         current = current.left
-        #         direction = "left"
-        #         break
-
-        # last_node = self.get_node(node_id = self.node_num)
-        # current.value = last_node.value
-        # if self.node_num % 2 == 0:
-        #     last_node.parent.left = None
-        # else:
-        #     last_node.parent.right = None
-        # self.node_num = self.node_num - 1
-
-        # is_inversed = True
-        # while is_inversed and current.parent != None:
-        #     if current.value < current.parent.value:
-        #         tmp = current.value
-        #         current.value = current.parent.value
-        #         current.parent.value = tmp
-        #         current = current.parent
-        #     else:
-        #         is_inversed = False
-
     def contains(self, value):
         if self.get_node(node_value = value) != None:
             return True

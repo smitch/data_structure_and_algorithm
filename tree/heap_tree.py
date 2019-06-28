@@ -71,43 +71,7 @@ class HeapTree():
         if self.root.left == None:
             self.root = HeapTree.Node()
             return res
-
         self.remove(1) # NOTE: node id 1 means root
-
-        # last_node = self.get_node(node_id = self.node_num)
-        # self.root.value = last_node.value
-        # if self.node_num % 2 == 0:
-        #     last_node.parent.left = None
-        # else:
-        #     last_node.parent.right = None
-        # self.node_num = self.node_num - 1
-
-        # current = self.root
-        # is_inversed = True
-        # while current.left != None and is_inversed:
-        #     is_inversed = False
-        #     if current.right != None:
-        #         if current.left.value < current.right.value:
-        #             if current.value > current.left.value:
-        #                 tmp = current.value
-        #                 current.value = current.left.value
-        #                 current.left.value = tmp
-        #                 current = current.left
-        #                 is_inversed = True
-        #         else:
-        #             if current.value > current.right.value:
-        #                 tmp = current.value
-        #                 current.value = current.right.value
-        #                 current.right.value = tmp
-        #                 current = current.right
-        #                 is_inversed = True
-        #     else:
-        #         # NOTE: left node is the last node
-        #         if current.left.value < current.value:
-        #             tmp = current.value
-        #             current.value = current.left.value
-        #             current.left.value = tmp
-        #             current = current.left
         return res
 
     def contains(self, value):

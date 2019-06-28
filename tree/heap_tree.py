@@ -6,6 +6,9 @@ class HeapTree():
         self.node_num = 0
 
     def add(self, value):
+        if value == None:
+            return
+
         if self.node_num == 0:
             self.root.value = value
             self.node_num = self.node_num + 1
@@ -71,7 +74,7 @@ class HeapTree():
         if self.root.left == None:
             self.root = HeapTree.Node()
             return res
-        self.remove(1) # NOTE: node id 1 means root
+        self.remove(self.root.value)
         return res
 
     def contains(self, value):
@@ -127,7 +130,11 @@ class HeapTree():
                         current = current.left
 
     def restore(self, tree_list):
-        pass
+        for i in tree_list:
+            for j in i:
+                print j
+                self.add(j)
+                self.dump()
 
     def dump(self):
         current = []
@@ -213,6 +220,10 @@ class HeapTree():
         tree.remove(1)
         tree.dump()
 
+        tree = HeapTree()
+        tree.dump()
+        tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
+        tree.dump()
 
 if __name__ == "__main__":
     HeapTree.test()

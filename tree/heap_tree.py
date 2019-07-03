@@ -1,3 +1,4 @@
+import unittest
 import math
 
 class HeapTree():
@@ -83,7 +84,12 @@ class HeapTree():
         else:
             return False
 
-    def merge_tree(self, tree):
+    def merge_tree(self, tree2):
+        # assume self > tree2
+        # select new root from tree2
+        # create new tree (root, self, tree2) and do down heap
+        # while self and tree2 are not shaped
+        # move nodes
         pass
 
     def remove(self, value):
@@ -132,11 +138,17 @@ class HeapTree():
     def restore(self, tree_list):
         for i in tree_list:
             for j in i:
-                print j
+                # print j
                 self.add(j)
-                self.dump()
+                # self.dump()
 
     def dump(self):
+        print self
+
+    def __str__(self):
+        return str(self.to_list())
+
+    def to_list(self):
         current = []
         current.append(self.root)
         depth = 0
@@ -156,7 +168,7 @@ class HeapTree():
                     assert node.right == None, "error! tree is not shaped"
             current = s
             depth = depth + 1
-        print value_list
+        return value_list
 
     class Node():
         def __init__(self, value=None, parent=None):
@@ -165,65 +177,98 @@ class HeapTree():
             self.right = None
             self.parent = parent
 
-    @staticmethod
-    def test():
+class HeapTreeTest(unittest.TestCase):
+    def test_dump(self):
         tree = HeapTree()
-        tree.dump()
         for i in range(16):
             tree.add(16-i)
-            tree.dump()
-        for i in range(16):
-            print tree.get_node(node_id = i+1).value
-        for i in range(16):
-            tree.dump()
-            tree.pop_root()
-        tree.dump()
 
+        self.assertEqual(tree.to_list(), [[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
+
+        expect_list = [1, 2, 3, 7, 8, 6, 4, 10, 13, 14, 9, 15, 11, 12, 5, 16, None]
+        for i in range(16):
+            ans = tree.get_node(node_id = i+1).value
+            self.assertEqual(expect_list[i], ans)
+
+        expect_list = [[[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]],
+                       [[2], [7, 3], [10, 8, 6, 4], [16, 13, 14, 9, 15, 11, 12, 5]],
+                       [[3], [7, 4], [10, 8, 6, 5], [16, 13, 14, 9, 15, 11, 12, None]],
+                       [[4], [7, 5], [10, 8, 6, 12], [16, 13, 14, 9, 15, 11]],
+                       [[5], [7, 6], [10, 8, 11, 12], [16, 13, 14, 9, 15, None]],
+                       [[6], [7, 11], [10, 8, 15, 12], [16, 13, 14, 9]],
+                       [[7], [8, 11], [10, 9, 15, 12], [16, 13, 14, None]],
+                       [[8], [9, 11], [10, 14, 15, 12], [16, 13]],
+                       [[9], [10, 11], [13, 14, 15, 12], [16, None]],
+                       [[10], [13, 11], [16, 14, 15, 12]],
+                       [[11], [13, 12], [16, 14, 15, None]],
+                       [[12], [13, 15], [16, 14]],
+                       [[13], [14, 15], [16, None]],
+                       [[14], [16, 15]],
+                       [[15], [16, None]],
+                       [[16]]]
+        for i in range(16):
+            self.assertEqual(expect_list[i], tree.to_list())
+            tree.pop_root()
+        self.assertEqual([[None]], tree.to_list())
+
+    def test_add(self):
         tree = HeapTree()
+        expect = [[1], [2, 3]]
         tree.add(1)
         tree.add(2)
         tree.add(3)
-        tree.dump()
-        tree.pop_root()
-        tree.dump()
+        self.assertEqual(expect, tree.to_list())
 
+        tree.pop_root()
+        expect = [[2], [3, None]]
+        self.assertEqual(expect, tree.to_list())
+
+    def test_pop_root(self):
         tree = HeapTree()
         values = [1, 2, 3, 4, 5, 3, 3]
         for i in values:
             tree.add(i)
-        tree.dump()
-        tree.pop_root()
-        tree.dump()
-        tree.pop_root()
-        tree.dump()
-        tree.pop_root()
-        tree.dump()
+        self.assertEqual(1, tree.pop_root())
+        self.assertEqual(2, tree.pop_root())
+        self.assertEqual(3, tree.pop_root())
 
-        print tree.get_node(node_value = 3).value
-        print tree.get_node(node_value = 10)
-        print tree.contains(3)
-        print tree.contains(10)
+        self.assertEqual(3, tree.get_node(node_value = 3).value)
+        self.assertEqual(None, tree.get_node(node_value = 10))
+        self.assertTrue(tree.contains(3))
+        self.assertFalse(tree.contains(10))
 
+    def test_restore(self):
         tree = HeapTree()
-        values = [1, 2, 3, 4, 5, 3, 3]
-        for i in values:
-            tree.add(i)
-        tree.dump()
-        tree.remove(2)
-        tree.dump()
-        tree.remove(3)
-        tree.dump()
-        tree.remove(3)
-        tree.dump()
-        tree.remove(3)
-        tree.dump()
-        tree.remove(1)
-        tree.dump()
-
-        tree = HeapTree()
-        tree.dump()
         tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
-        tree.dump()
+        expect = [[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]]
+        self.assertEqual(expect, tree.to_list())
+
+    def test_remove(self):
+        tree = HeapTree()
+        values = [1, 2, 3, 4, 5, 3, 3]
+        expect_list = [[[1], [2, 3], [4, 5, 3, 3]],
+                       [[1], [3, 3], [4, 5, 3, None]],
+                       [[1], [3, 3], [4, 5]],
+                       [[1], [3, 5], [4, None]],
+                       [[1], [4, 5]],
+                       [[4], [5, None]]]
+        for i in values:
+            tree.add(i)
+        self.assertEqual(expect_list[0], tree.to_list())
+        tree.remove(2)
+        self.assertEqual(expect_list[1], tree.to_list())
+        tree.remove(3)
+        self.assertEqual(expect_list[2], tree.to_list())
+        tree.remove(3)
+        self.assertEqual(expect_list[3], tree.to_list())
+        tree.remove(3)
+        self.assertEqual(expect_list[4], tree.to_list())
+        tree.remove(1)
+        self.assertEqual(expect_list[5], tree.to_list())
+        tree.remove(1) # NOTE: no node removed
+        self.assertEqual(expect_list[5], tree.to_list())
+
 
 if __name__ == "__main__":
-    HeapTree.test()
+    # HeapTree.test()
+    unittest.main()

@@ -72,10 +72,6 @@ class HeapTree():
     def pop_root(self):
         assert self.root != None, "error! root is None" # NOTE: tree has at least one Node as dummy root
         res = self.root.value
-        # if self.root.left == None:
-        #     # FIXME: this section may be unneccesarry
-        #     self.root = HeapTree.Node()
-        #     return res
         self.remove(self.root.value)
         return res
 
@@ -145,9 +141,7 @@ class HeapTree():
     def restore(self, tree_list):
         for i in tree_list:
             for j in i:
-                # print j
                 self.add(j)
-                # self.dump()
 
     def dump(self):
         print self
@@ -299,5 +293,4 @@ class HeapTreeTest(unittest.TestCase):
         self.assertEqual(expect, tree1.to_list())
 
 if __name__ == "__main__":
-    # HeapTree.test()
     unittest.main()

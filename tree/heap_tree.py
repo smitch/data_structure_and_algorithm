@@ -72,9 +72,10 @@ class HeapTree():
     def pop_root(self):
         assert self.root != None, "error! root is None" # NOTE: tree has at least one Node as dummy root
         res = self.root.value
-        if self.root.left == None:
-            self.root = HeapTree.Node()
-            return res
+        # if self.root.left == None:
+        #     # FIXME: this section may be unneccesarry
+        #     self.root = HeapTree.Node()
+        #     return res
         self.remove(self.root.value)
         return res
 
@@ -84,13 +85,17 @@ class HeapTree():
         else:
             return False
 
-    def merge_tree(self, tree2):
+    def merge(self, tree2):
         # assume self > tree2
+#        if self.node_num > tree2.node_num:
         # select new root from tree2
         # create new tree (root, self, tree2) and do down heap
         # while self and tree2 are not shaped
         # move nodes
-        pass
+
+        # NOTE: merge algorithm is simple, takes O(len(tree2) * log(depth(tree1)))
+        while tree2.node_num != 0:
+            self.add(tree2.pop_root())
 
     def remove(self, value):
         target = self.get_node(node_value = value)
@@ -98,6 +103,8 @@ class HeapTree():
             return
         elif target == self.root and target.left == None: # NOTE: target is root and has no child
             self.root = HeapTree.Node()
+            assert self.node_num == 1, "Error! invalid node number!"
+            self.node_num = self.node_num - 1
             return
         else:
             last_node = self.get_node(node_id = self.node_num)
@@ -251,10 +258,14 @@ class HeapTreeTest(unittest.TestCase):
                        [[1], [3, 3], [4, 5]],
                        [[1], [3, 5], [4, None]],
                        [[1], [4, 5]],
-                       [[4], [5, None]]]
+                       [[4], [5, None]],
+                       [[4]],
+                       [[None]]]
+        self.assertEqual(0, tree.node_num)
         for i in values:
             tree.add(i)
         self.assertEqual(expect_list[0], tree.to_list())
+        self.assertEqual(7, tree.node_num)
         tree.remove(2)
         self.assertEqual(expect_list[1], tree.to_list())
         tree.remove(3)
@@ -267,7 +278,25 @@ class HeapTreeTest(unittest.TestCase):
         self.assertEqual(expect_list[5], tree.to_list())
         tree.remove(1) # NOTE: no node removed
         self.assertEqual(expect_list[5], tree.to_list())
+        tree.remove(5)
+        self.assertEqual(expect_list[6], tree.to_list())
+        self.assertEqual(1, tree.node_num)
+        tree.remove(4)
+        self.assertEqual(expect_list[7], tree.to_list())
+        self.assertEqual(0, tree.node_num)
 
+    def test_merge(self):
+        tree1 = HeapTree()
+        t1 = [1, 2, 3]
+        for i in t1:
+            tree1.add(i)
+        tree2 = HeapTree()
+        t2 = [4, 5]
+        for i in t2:
+            tree2.add(i)
+        tree1.merge(tree2)
+        expect = [[1], [2, 3], [4, 5]]
+        self.assertEqual(expect, tree1.to_list())
 
 if __name__ == "__main__":
     # HeapTree.test()

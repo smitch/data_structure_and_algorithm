@@ -1,3 +1,9 @@
+# TODO
+# - iterable
+# - is_heap
+# - is_shaped
+# - pydoc
+
 import unittest
 import math
 
@@ -82,6 +88,10 @@ class HeapTree():
             return False
 
     def merge(self, tree2):
+        # NOTE: merge algorithm is simple, takes O(len(tree2) * log(depth(tree1)))
+        while tree2.node_num != 0:
+            self.add(tree2.pop_root())
+        # TODO: O(2**(log(n/m))*log(depth(tree1))) algorithm
         # assume self > tree2
 #        if self.node_num > tree2.node_num:
         # select new root from tree2
@@ -89,9 +99,6 @@ class HeapTree():
         # while self and tree2 are not shaped
         # move nodes
 
-        # NOTE: merge algorithm is simple, takes O(len(tree2) * log(depth(tree1)))
-        while tree2.node_num != 0:
-            self.add(tree2.pop_root())
 
     def remove(self, value):
         target = self.get_node(node_value = value)
@@ -170,6 +177,13 @@ class HeapTree():
             current = s
             depth = depth + 1
         return value_list
+
+    def is_heap(self):
+
+        pass
+
+    def is_shaped(self):
+        pass
 
     class Node():
         def __init__(self, value=None, parent=None):

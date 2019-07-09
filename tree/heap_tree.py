@@ -178,11 +178,16 @@ class HeapTree():
             depth = depth + 1
         return value_list
 
-    def is_heap(self):
+    def __iter__(self):
+        return HeapTreeIterator(self)
 
+    def is_heap(self):
         pass
 
     def is_shaped(self):
+        pass
+
+    def copy(self):
         pass
 
     class Node():
@@ -191,6 +196,27 @@ class HeapTree():
             self.left = None
             self.right = None
             self.parent = parent
+
+class HeapTreeIterator():
+    def __init__(self, tree):
+        self._tree = tree
+        self._stack  = []
+        self._stack.append(self._tree.root)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._stack != []:
+            current = self._stack.pop()
+            if current.left != None:
+                self._stack.append(current.left)
+            if current.right != None:
+                self._stack.append(current.right)
+            return current
+        else:
+            raise StopIteration
+    next = __next__
 
 class HeapTreeTest(unittest.TestCase):
     def test_dump(self):
@@ -305,6 +331,26 @@ class HeapTreeTest(unittest.TestCase):
         tree1.merge(tree2)
         expect = [[1], [2, 3], [4, 5]]
         self.assertEqual(expect, tree1.to_list())
+
+    def test_iterator(self):
+        tree = HeapTree()
+        # t = [1]
+        t = [1, 2, 3]
+        for i in t:
+            tree.add(i)
+        ans = []
+        for i in tree:
+            ans.append(i.value)
+        expect = [1, 3, 2]
+        self.assertEqual(expect, ans)
+
+        tree = HeapTree()
+        tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
+        expect = [1, 3, 4, 5, 12, 6, 11, 15, 2, 8, 9, 14, 7, 13, 10, 16]
+        ans = []
+        for i in tree:
+            ans.append(i.value)
+        self.assertEqual(expect, ans)
 
 if __name__ == "__main__":
     unittest.main()

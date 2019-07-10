@@ -178,8 +178,23 @@ class HeapTree():
             depth = depth + 1
         return value_list
 
-    def __iter__(self):
+    def bfs_iter(self):
         return HeapTreeIterator(self)
+
+    __iter__ = bfs_iter
+
+    # def dfs_iter(self, current = self.root):
+    def dfs_iter(self, current = None):
+        if current == None:
+            current = self.root
+        yield current
+        if current.left != None:
+            for i in self.dfs_iter(current.left):
+                yield i
+        if current.right != None:
+            for i in self.dfs_iter(current.right):
+                yield i
+        raise StopIteration
 
     def is_heap(self):
         pass
@@ -208,7 +223,7 @@ class HeapTreeIterator():
 
     def __next__(self):
         if self._stack != []:
-            current = self._stack.pop()
+            current = self._stack.pop(0)
             if current.left != None:
                 self._stack.append(current.left)
             if current.right != None:
@@ -341,13 +356,46 @@ class HeapTreeTest(unittest.TestCase):
         ans = []
         for i in tree:
             ans.append(i.value)
-        expect = [1, 3, 2]
+        expect = [1, 2, 3]
         self.assertEqual(expect, ans)
 
         tree = HeapTree()
         tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
-        expect = [1, 3, 4, 5, 12, 6, 11, 15, 2, 8, 9, 14, 7, 13, 10, 16]
+        expect = [1, 2, 3, 7, 8, 6, 4, 10, 13, 14, 9, 15, 11, 12, 5, 16]
         ans = []
+        for i in tree:
+            ans.append(i.value)
+        self.assertEqual(expect, ans)
+
+        ans = []
+        expect = [None]
+        tree = HeapTree()
+        for i in tree:
+            ans.append(i.value)
+        self.assertEqual(expect, ans)
+
+    def test_dfs(self):
+        tree = HeapTree()
+        t = [1, 2, 3]
+        for i in t:
+            tree.add(i)
+        ans = []
+        for i in tree.dfs_iter():
+            ans.append(i.value)
+        expect = [1, 2, 3]
+        self.assertEqual(expect, ans)
+
+        tree = HeapTree()
+        tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
+        expect = [1, 2, 7, 10, 16, 13, 8, 14, 9, 3, 6, 15, 11, 4, 12, 5]
+        ans = []
+        for i in tree.dfs_iter():
+            ans.append(i.value)
+        self.assertEqual(expect, ans)
+
+        ans = []
+        expect = [None]
+        tree = HeapTree()
         for i in tree:
             ans.append(i.value)
         self.assertEqual(expect, ans)

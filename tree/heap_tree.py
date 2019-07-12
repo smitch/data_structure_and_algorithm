@@ -183,7 +183,6 @@ class HeapTree():
 
     __iter__ = bfs_iter
 
-    # def dfs_iter(self, current = self.root):
     def dfs_iter(self, current = None):
         if current == None:
             current = self.root

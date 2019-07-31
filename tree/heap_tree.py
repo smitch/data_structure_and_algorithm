@@ -1,10 +1,17 @@
+"""
+This exports heap tree operations
+"""
+
+__author__ = "smitch"
+__version__ = "0.0.1"
+__date__ = "2019/07/16"
+
 # TODO
 # - iterable
 # - is_heap
 # - is_shaped
 # - pydoc
 
-import math
 
 class HeapTree():
     def __init__(self):
@@ -12,7 +19,10 @@ class HeapTree():
         self.node_num = 0
 
     def add(self, value):
-        if value == None:
+        """
+        add node having value to tree
+        """
+        if value is None:
             return
 
         if self.node_num == 0:
@@ -30,7 +40,7 @@ class HeapTree():
             parent.right = current
 
         is_inversed = True
-        while is_inversed and current.parent != None:
+        while is_inversed and current.parent is not None:
             if current.value < current.parent.value:
                 tmp = current.value
                 current.value = current.parent.value
@@ -39,12 +49,22 @@ class HeapTree():
             else:
                 is_inversed = False
 
-    def get_node(self, node_id = None, node_value = None):
-        if node_id == None and node_value == None:
-            return None
-        assert node_id == None or node_value == None, "get_node: specifying both node_id and node_value is not supported!"
+    def get_node(self, node_id=None, node_value=None):
+        """Returns node which corresponds to node_id or has node_value
 
-        if node_id != None:
+        Args:
+          node_id: the id of target node. node_id is calculated by heap tree indexing.
+          node_value: the value of node.
+        Either node_id or node_value should be specified. Giving both args occurs error.
+
+        Returns:
+          Node which corresponds to node_id or has node_value
+        """
+        if (node_id is None) and (node_value is None):
+            return None
+        assert node_id is None or node_value is None, "get_node: specifying both node_id and node_value is not supported!"
+
+        if node_id is not None:
             if self.node_num + 1 < node_id or node_id < 1: # NOTE: node id of root is 1
                 return None
             direction = [] # NOTE: 0 for left, 1 for right
@@ -53,35 +73,35 @@ class HeapTree():
                 node_id = node_id / 2
 
             current = self.root
-            for i in range(len(direction)):
+            while direction:
                 if direction.pop() == 0:
                     current = current.left
                 else:
                     current = current.right
             return current
 
-        else: # NOTE: node_value != None
+        else: # NOTE: node_value is not None
             stack  = []
             stack.append(self.root)
-            while stack != []:
+            while stack:
                 current = stack.pop()
                 if current.value == node_value:
                     return current
                 else:
-                    if current.left != None:
+                    if current.left:
                         stack.append(current.left)
-                    if current.right != None:
+                    if current.right:
                         stack.append(current.right)
             return None # NOTE: no node has node_value
 
     def pop_root(self):
-        assert self.root != None, "error! root is None" # NOTE: tree has at least one Node as dummy root
+        assert self.root is not None, "error! root is None" # NOTE: tree has at least one Node as dummy root
         res = self.root.value
         self.remove(self.root.value)
         return res
 
     def contains(self, value):
-        if self.get_node(node_value = value) != None:
+        if self.get_node(node_value=value):
             return True
         else:
             return False
@@ -100,12 +120,12 @@ class HeapTree():
 
 
     def remove(self, value):
-        target = self.get_node(node_value = value)
-        if target == None:
+        target = self.get_node(node_value=value)
+        if target is None:
             return
-        elif target == self.root and target.left == None: # NOTE: target is root and has no child
+        elif (target == self.root) and (target.left is None): # NOTE: target is root and has no child
             self.root = HeapTree.Node()
-            assert self.node_num == 1, "Error! invalid node number!"
+            assert self.node_num == 1, "Error! invalid node number! expect:1, actual: "+str(self.node_num)
             self.node_num = self.node_num - 1
             return
         else:
@@ -119,9 +139,9 @@ class HeapTree():
 
             current = target
             is_inversed = True
-            while current.left != None and is_inversed:
+            while current.left and is_inversed:
                 is_inversed = False
-                if current.right != None:
+                if current.right is not None:
                     if current.left.value < current.right.value:
                         if current.value > current.left.value:
                             tmp = current.value
@@ -160,19 +180,19 @@ class HeapTree():
         current.append(self.root)
         depth = 0
         value_list = []
-        while current != []:
+        while current:
             s = []
             value_list.append([])
             for node in current:
                 value_list[depth].append(node.value)
-                if node.left != None:
+                if node.left is not None:
                     s.append(node.left)
-                    if node.right != None:
+                    if node.right is not None:
                         s.append(node.right)
                     else:
                         s.append(HeapTree.Node()) # NOTE: add dummy node to print None
                 else:
-                    assert node.right == None, "error! tree is not shaped"
+                    assert node.right is None, "error! tree is not shaped"
             current = s
             depth = depth + 1
         return value_list
@@ -182,14 +202,14 @@ class HeapTree():
 
     __iter__ = bfs_iter
 
-    def dfs_iter(self, current = None):
-        if current == None:
+    def dfs_iter(self, current=None):
+        if current is None:
             current = self.root
         yield current
-        if current.left != None:
+        if current.left is not None:
             for i in self.dfs_iter(current.left):
                 yield i
-        if current.right != None:
+        if current.right is not None:
             for i in self.dfs_iter(current.right):
                 yield i
         raise StopIteration
@@ -219,15 +239,15 @@ class HeapTreeIterator():
     def __iter__(self):
         return self
 
-    def __next__(self):
-        if self._stack != []:
+    def next(self):
+        if self._stack:
             current = self._stack.pop(0)
-            if current.left != None:
+            if current.left is not None:
                 self._stack.append(current.left)
-            if current.right != None:
+            if current.right is not None:
                 self._stack.append(current.right)
             return current
         else:
             raise StopIteration
-    next = __next__
+    __next__ = next
 

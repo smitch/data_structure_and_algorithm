@@ -43,10 +43,6 @@ class HeapTreeTest(unittest.TestCase):
         tree.add(3)
         self.assertEqual(expect, tree.to_list())
 
-        tree.pop_root()
-        expect = [[2], [3, None]]
-        self.assertEqual(expect, tree.to_list())
-
     def test_pop_root(self):
         tree = HeapTree()
         values = [1, 2, 3, 4, 5, 3, 3]
@@ -66,6 +62,18 @@ class HeapTreeTest(unittest.TestCase):
         tree.restore([[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]])
         expect = [[1], [2, 3], [7, 8, 6, 4], [10, 13, 14, 9, 15, 11, 12, 5], [16, None]]
         self.assertEqual(expect, tree.to_list())
+
+    def test_get_node(self):
+        tree = HeapTree()
+        values = [1, 2, 3]
+        for i in values:
+            tree.add(i)
+        self.assertEqual(3, tree.get_node(node_value = 3).value)
+        self.assertEqual(2, tree.get_node(node_value = 2).value)
+        self.assertEqual(1, tree.get_node(node_value = 1).value)
+        self.assertEqual(None, tree.get_node(node_value = 10))
+        self.assertTrue(tree.contains(3))
+        self.assertFalse(tree.contains(10))
 
     def test_remove(self):
         tree = HeapTree()

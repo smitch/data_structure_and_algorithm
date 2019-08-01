@@ -176,5 +176,28 @@ class HeapTreeTest(unittest.TestCase):
             ans.append(i.value)
         self.assertEqual(expect, ans)
 
+    def test_str(self):
+        tree = HeapTree()
+        t = [1, 2, 3]
+        for i in t:
+            tree.add(i)
+        ans = str(tree)
+        expect = '[[1], [2, 3]]'
+        self.assertEqual(expect, ans)
+
+    def test_is_heap(self):
+        tree = HeapTree()
+        t = [1, 2, 3, 4, 5, 3]
+        for i in t:
+            tree.add(i)
+        self.assertTrue(tree.is_heap())
+
+        tree.root.value = 4
+        self.assertFalse(tree.is_heap())
+
+        tree.root.value = 1
+        tree.root.left.value = 0
+        self.assertFalse(tree.is_heap())
+
 if __name__ == "__main__":
     unittest.main()

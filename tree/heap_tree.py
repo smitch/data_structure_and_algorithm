@@ -12,7 +12,6 @@ __date__ = "2019/07/16"
 # - is_shaped
 # - pydoc
 
-
 class HeapTree():
     def __init__(self):
         self.root = HeapTree.Node()
@@ -215,7 +214,14 @@ class HeapTree():
         raise StopIteration
 
     def is_heap(self):
-        pass
+        for i in self:
+            if i.left is not None:
+                if i.value > i.left.value:
+                    return False
+            if i.right is not None:
+                if i.value > i.right.value:
+                    return False
+        return True
 
     def is_shaped(self):
         pass

@@ -125,7 +125,6 @@ class HeapTreeTest(unittest.TestCase):
 
     def test_iterator(self):
         tree = HeapTree()
-        # t = [1]
         t = [1, 2, 3]
         for i in t:
             tree.add(i)
@@ -198,6 +197,16 @@ class HeapTreeTest(unittest.TestCase):
         tree.root.value = 1
         tree.root.left.value = 0
         self.assertFalse(tree.is_heap())
+
+    def test_is_shaped(self):
+        tree = HeapTree()
+        tree.add(0)
+        tree.add(1)
+        self.assertTrue(tree.is_shaped())
+
+        tree.root.left.left = HeapTree.Node(1)
+        self.assertFalse(tree.is_shaped())
+        tree.node_num += 1
 
 if __name__ == "__main__":
     unittest.main()

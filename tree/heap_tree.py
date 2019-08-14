@@ -2,15 +2,11 @@
 This exports heap tree operations
 """
 
+import math
+
 __author__ = "smitch"
 __version__ = "0.0.1"
-__date__ = "2019/07/16"
-
-# TODO
-# - iterable
-# - is_heap
-# - is_shaped
-# - pydoc
+__date__ = "2019/08/15"
 
 class HeapTree():
     def __init__(self):
@@ -116,7 +112,6 @@ class HeapTree():
         # create new tree (root, self, tree2) and do down heap
         # while self and tree2 are not shaped
         # move nodes
-
 
     def remove(self, value):
         target = self.get_node(node_value=value)
@@ -224,7 +219,38 @@ class HeapTree():
         return True
 
     def is_shaped(self):
-        pass
+        depth = int(math.log(self.node_num, 2))
+        queue = []
+        queue.append(self.root)
+        for i in range(depth-1):
+            new = []
+            for j in range(2**i):
+                if not queue:
+                    return False
+                current = queue.pop(0)
+                if current.left is not None:
+                    new.append(current.left)
+                    if current.right is not None:
+                        new.append(current.right)
+                elif current.right is not None:
+                    return False
+            queue = new
+
+        has_child = True
+        for current in queue: # TODO: check FIFO order?
+            if current.left is not None:
+                if  (current.left.left is not None) or (current.left.right is not None):
+                    return False
+                if current.right is not None:
+                    if (current.right.left is not None) or (current.right.right is not None):
+                        return False
+                if not has_child:
+                    return False
+            else:
+                has_child = False
+                if current.right is not None:
+                    return False
+        return True
 
     def copy(self):
         pass
@@ -236,22 +262,25 @@ class HeapTree():
             self.right = None
             self.parent = parent
 
+        def __str__(self):
+            return str(self.value)
+
 class HeapTreeIterator():
     def __init__(self, tree):
         self._tree = tree
-        self._stack  = []
-        self._stack.append(self._tree.root)
+        self._queue  = []
+        self._queue.append(self._tree.root)
 
     def __iter__(self):
         return self
 
     def next(self):
-        if self._stack:
-            current = self._stack.pop(0)
+        if self._queue:
+            current = self._queue.pop(0)
             if current.left is not None:
-                self._stack.append(current.left)
+                self._queue.append(current.left)
             if current.right is not None:
-                self._stack.append(current.right)
+                self._queue.append(current.right)
             return current
         else:
             raise StopIteration
